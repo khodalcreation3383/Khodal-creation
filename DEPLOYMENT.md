@@ -1,6 +1,6 @@
 # 🚀 Vercel Deployment Guide - Khodal Creation
 
-Complete guide to deploy the Textile Admin system to Vercel.
+Complete guide to deploy the Textile Admin system to Vercel with Cloudinary integration.
 
 ---
 
@@ -9,6 +9,7 @@ Complete guide to deploy the Textile Admin system to Vercel.
 1. **Vercel Account** - Sign up at [vercel.com](https://vercel.com)
 2. **GitHub Repository** - Push your code to GitHub
 3. **MongoDB Atlas** - Already configured in `.env`
+4. **Cloudinary Account** - Already configured for image uploads
 
 ---
 
@@ -32,7 +33,12 @@ ADMIN_EMAIL=admin@khodalcreation.com
 ADMIN_PASSWORD=Krushil@3383
 MAX_FILE_SIZE=5242880
 UPLOAD_PATH=uploads
+CLOUDINARY_CLOUD_NAME=dicg9zye0
+CLOUDINARY_API_KEY=412733264327615
+CLOUDINARY_API_SECRET=your_api_secret_here
 ```
+
+**⚠️ Important:** Replace `your_api_secret_here` with your actual Cloudinary API secret.
 
 ### Frontend Environment Variables (Vercel Dashboard)
 
@@ -44,7 +50,7 @@ VITE_API_URL=https://khodalcreation-backend.vercel.app
 
 ---
 
-## 🌐 Step 2: Deploy Backend
+## 🌐 Step 2: Deploy Backend (Server)
 
 ### Option A: Using Vercel CLI (Recommended)
 
@@ -76,22 +82,22 @@ vercel --prod
 5. **Build Command**: (leave empty)
 6. **Output Directory**: (leave empty)
 7. **Install Command**: `npm install`
-8. Add all environment variables from Step 1
+8. Add all environment variables from Step 1 (including Cloudinary credentials)
 9. Click **Deploy**
 
 **Your backend will be live at:** `https://khodalcreation-backend.vercel.app`
 
 ---
 
-## 🎨 Step 3: Deploy Frontend
+## 🎨 Step 3: Deploy Frontend (Client)
 
 ### Option A: Using Vercel CLI
 
 ```bash
-# Navigate to client folder
-cd client
+# Navigate back to root
+cd ..
 
-# Deploy to production
+# Deploy from root (will build client automatically)
 vercel --prod
 
 # When prompted:
@@ -103,16 +109,40 @@ vercel --prod
 ### Option B: Using Vercel Dashboard
 
 1. Go to [vercel.com/new](https://vercel.com/new)
-2. Import your GitHub repository
-3. **Root Directory**: `client`
-4. **Framework Preset**: Vite
-5. **Build Command**: `npm run build`
-6. **Output Directory**: `dist`
-7. **Install Command**: `npm install`
+2. Import your GitHub repository (same repo, different project)
+3. **Root Directory**: `.` (root)
+4. **Framework Preset**: Other
+5. **Build Command**: `npm install --prefix client && npm run build --prefix client`
+6. **Output Directory**: `client/dist`
+7. **Install Command**: `echo 'Skipping root install'`
 8. Add environment variable: `VITE_API_URL=https://khodalcreation-backend.vercel.app`
 9. Click **Deploy**
 
 **Your frontend will be live at:** `https://khodalcreation.vercel.app`
+
+---
+
+## 🖼️ Cloudinary Integration (Already Configured)
+
+The system now uses **Cloudinary** for all image uploads, which solves Vercel's ephemeral storage issue.
+
+### Features:
+✅ **Persistent Storage** - Images never get deleted on deployment
+✅ **CDN Delivery** - Fast image loading worldwide
+✅ **Auto Optimization** - Images automatically compressed
+✅ **Transformations** - Auto-resize (designs: 1000x1000, logos: 500x500)
+✅ **Serverless Ready** - No `/tmp` folder issues
+
+### Folders on Cloudinary:
+- `khodal-creation/designs/` - All design images
+- `khodal-creation/logos/` - Business logos
+
+### What's Updated:
+- ✅ Upload middleware uses Cloudinary storage
+- ✅ Design controller handles Cloudinary URLs
+- ✅ Settings controller handles logo uploads
+- ✅ Old images auto-delete from Cloudinary on update
+- ✅ Helper functions for image management
 
 ---
 
@@ -134,36 +164,11 @@ The project includes `.github/workflows/deploy.yml` for automatic deployment.
 3. Push to `main` branch:
 ```bash
 git add .
-git commit -m "Deploy to Vercel"
+git commit -m "Deploy to Vercel with Cloudinary"
 git push origin main
 ```
 
 GitHub Actions will automatically deploy both backend and frontend.
-
----
-
-## ⚠️ Important Notes
-
-### File Uploads on Vercel
-
-Vercel serverless functions use **ephemeral storage** (`/tmp`). Uploaded files (design images, logos) will be **lost on each deployment**.
-
-**Solutions:**
-
-1. **Use Cloudinary** (Recommended for production):
-   - Sign up at [cloudinary.com](https://cloudinary.com)
-   - Update upload middleware to use Cloudinary SDK
-   - Store image URLs in MongoDB
-
-2. **Use Vercel Blob Storage**:
-   - Install `@vercel/blob`
-   - Update upload logic to use Vercel Blob
-
-3. **Use AWS S3 / Google Cloud Storage**:
-   - Configure S3 bucket
-   - Update multer to use `multer-s3`
-
-For now, the system works but **uploaded images will be temporary**.
 
 ---
 
@@ -174,11 +179,13 @@ For now, the system works but **uploaded images will be temporary**.
    - **Email:** `admin@khodalcreation.com`
    - **Password:** `Krushil@3383`
 3. Test all features:
-   - Create a design
-   - Add a party
-   - Create a bill
-   - Download PDF invoice
-   - Check if logo appears in PDF
+   - ✅ Upload a design image (should go to Cloudinary)
+   - ✅ Upload a logo (should go to Cloudinary)
+   - ✅ Add a party
+   - ✅ Create a bill
+   - ✅ Download PDF invoice
+   - ✅ Check if logo appears in PDF
+   - ✅ Update design image (old one should delete from Cloudinary)
 
 ---
 
@@ -188,15 +195,23 @@ For now, the system works but **uploaded images will be temporary**.
 - Check Vercel logs: `vercel logs <deployment-url>`
 - Verify MongoDB Atlas IP whitelist: Allow `0.0.0.0/0` (all IPs)
 - Check environment variables are set correctly
+- Verify Cloudinary credentials are correct
 
 ### Frontend can't connect to backend
 - Verify `VITE_API_URL` is set in Vercel frontend project
 - Check CORS settings in `server/src/index.js`
 - Open browser console for error messages
 
-### Images not loading
-- This is expected on Vercel serverless (see File Uploads section above)
-- Implement Cloudinary or Vercel Blob for persistent storage
+### Images not uploading
+- Check Cloudinary credentials in Vercel environment variables
+- Verify API secret is correct (not `your_api_secret_here`)
+- Check Cloudinary dashboard for upload quota
+- Check browser console for upload errors
+
+### Build failing with "vite: command not found"
+- This is now fixed with updated `vercel.json` and `package.json`
+- The build command now installs client dependencies first
+- If still failing, check Vercel build logs for specific errors
 
 ---
 
@@ -205,12 +220,14 @@ For now, the system works but **uploaded images will be temporary**.
 ### Backend
 ```bash
 cd server
+npm install
 vercel --prod
 ```
 
-### Frontend
+### Frontend (from root)
 ```bash
-cd client
+npm install --prefix client
+npm run build --prefix client
 vercel --prod
 ```
 
@@ -226,7 +243,18 @@ Before going live:
 - ✅ CORS origins restricted to your domains
 - ✅ Rate limiting enabled
 - ✅ Helmet security headers active
-- ⚠️ Consider implementing Cloudinary for file uploads
+- ✅ Cloudinary credentials secured in environment variables
+- ✅ Cloudinary API secret not committed to Git
+
+---
+
+## 📊 Cloudinary Dashboard
+
+Monitor your uploads:
+1. Go to [cloudinary.com/console](https://cloudinary.com/console)
+2. Check **Media Library** for uploaded images
+3. Monitor **Usage** for storage and bandwidth
+4. View **Transformations** for optimization stats
 
 ---
 
@@ -235,8 +263,20 @@ Before going live:
 For issues:
 1. Check Vercel deployment logs
 2. Check MongoDB Atlas connection
-3. Verify all environment variables
-4. Test API endpoints directly: `https://khodalcreation-backend.vercel.app/api/health`
+3. Check Cloudinary dashboard for upload errors
+4. Verify all environment variables
+5. Test API endpoints directly: `https://khodalcreation-backend.vercel.app/api/health`
+
+---
+
+## 📝 Important Files
+
+- `server/src/config/cloudinary.config.js` - Cloudinary setup
+- `server/src/middleware/upload.middleware.js` - Upload handling
+- `server/src/utils/cloudinaryHelper.js` - Image deletion helpers
+- `server/CLOUDINARY_SETUP.md` - Detailed Cloudinary documentation
+- `vercel.json` (root) - Frontend deployment config
+- `server/vercel.json` - Backend deployment config
 
 ---
 
