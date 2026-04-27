@@ -1,6 +1,27 @@
 const multer = require('multer');
 const path = require('path');
-const { designStorage, logoStorage } = require('../config/cloudinary.config');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { cloudinary } = require('../config/cloudinary.config');
+
+// Create Cloudinary storage for designs
+const designStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'khodal-creation/designs',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+  }
+});
+
+// Create Cloudinary storage for logos
+const logoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'khodal-creation/logos',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }]
+  }
+});
 
 const imageFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
