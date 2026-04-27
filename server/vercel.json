@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "khodalcreation-backend",
+  "installCommand": "npm install --legacy-peer-deps",
   "builds": [
     {
       "src": "src/index.js",
@@ -20,10 +21,5 @@
       "src": "/(.*)",
       "dest": "src/index.js"
     }
-  ],
-  "build": {
-    "env": {
-      "NPM_FLAGS": "--legacy-peer-deps"
-    }
-  }
+  ]
 }
