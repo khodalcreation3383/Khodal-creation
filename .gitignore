@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files - DO NOT commit secrets
+server/.env
+server/.env.production
+client/.env
+client/.env.production
+
+# Build output
+client/dist/
+client/build/
+
+# Logs
+server/logs/
+*.log
+
+# Uploads (local only - not committed)
+server/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Vercel
+.vercel/

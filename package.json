@@ -1,0 +1,13 @@
+{
+  "name": "textile-admin",
+  "version": "1.0.0",
+  "description": "Textile Business Management System - MERN Stack",
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "start cmd /k \"npm run dev --prefix server\" && start cmd /k \"npm run dev --prefix client\"",
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "seed": "npm run seed --prefix server",
+    "build": "npm run build --prefix client"
+  }
+}
