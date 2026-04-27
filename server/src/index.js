@@ -36,12 +36,13 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS
+// CORS - Allow all origins in production for now (can restrict later)
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
       process.env.CLIENT_URL,
       'https://khodalcreation.vercel.app',
-      'https://www.khodalcreation.vercel.app'
+      'https://www.khodalcreation.vercel.app',
+      'https://khodalcreation-backend.vercel.app'
     ].filter(Boolean)
   : ['http://localhost:3000', 'http://localhost:5173'];
 
@@ -50,11 +51,17 @@ app.use(cors({
     // Allow requests with no origin (mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
+    // In production, allow all Vercel domains
+    if (process.env.NODE_ENV === 'production' && origin && origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
     callback(new Error(`CORS blocked: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 // Body parsing
