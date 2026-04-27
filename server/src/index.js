@@ -24,19 +24,7 @@ const reportRoutes = require('./routes/report.routes');
 
 const app = express();
 
-// Security middleware
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(compression());
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 500,
-  message: { success: false, message: 'Too many requests, please try again later.' }
-});
-app.use('/api/', limiter);
-
-// CORS - Allow all origins in production for now (can restrict later)
+// CORS must be before other middleware
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
       process.env.CLIENT_URL,
@@ -64,6 +52,21 @@ app.use(cors({
   optionsSuccessStatus: 204
 }));
 
+// Security middleware
+app.use(helmet({ 
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false // Disable CSP for API
+}));
+app.use(compression());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: { success: false, message: 'Too many requests, please try again later.' }
+});
+app.use('/api/', limiter);
+
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -78,6 +81,9 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV !== 'production') {
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 }
+
+// Handle preflight requests
+app.options('*', cors());
 
 // API Routes
 app.use('/api/auth', authRoutes);
