@@ -66,12 +66,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Static files - only serve locally (Vercel serverless has no persistent disk)
+// Static files - Cloudinary handles all uploads now
+// No need for local file serving in production
 if (process.env.NODE_ENV !== 'production') {
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-} else {
-  // In production, uploaded files are served from the /tmp directory on Vercel
-  app.use('/uploads', express.static('/tmp/uploads'));
 }
 
 // API Routes
@@ -127,13 +125,15 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   await connectDB();
   
-  // Create upload directories (use /tmp on Vercel serverless)
-  const fs = require('fs');
-  const uploadBase = process.env.NODE_ENV === 'production' ? '/tmp/uploads' : path.join(__dirname, '..', 'uploads');
-  const dirs = [uploadBase, `${uploadBase}/designs`, `${uploadBase}/logos`, `${uploadBase}/temp`];
-  dirs.forEach(dir => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  });
+  // Create upload directories only in development (Cloudinary handles production uploads)
+  if (process.env.NODE_ENV !== 'production') {
+    const fs = require('fs');
+    const uploadBase = path.join(__dirname, '..', 'uploads');
+    const dirs = [uploadBase, `${uploadBase}/designs`, `${uploadBase}/logos`, `${uploadBase}/temp`];
+    dirs.forEach(dir => {
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    });
+  }
 
   app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
@@ -144,11 +144,8 @@ const startServer = async () => {
 // On Vercel, export the app directly (serverless)
 // Locally, start the server normally
 if (process.env.NODE_ENV === 'production') {
-  // Vercel: connect DB and export app
+  // Vercel: connect DB and start cron jobs (no file system operations needed)
   connectDB().then(() => {
-    const fs = require('fs');
-    const dirs = ['/tmp/uploads', '/tmp/uploads/designs', '/tmp/uploads/logos', '/tmp/uploads/temp'];
-    dirs.forEach(dir => { try { require('fs').mkdirSync(dir, { recursive: true }); } catch {} });
     startCronJobs();
   });
 } else {
