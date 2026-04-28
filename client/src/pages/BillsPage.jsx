@@ -128,35 +128,40 @@ export default function BillsPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th>Bill No.</Th><Th>Party</Th><Th>Bill Date</Th><Th>Due Date</Th>
-                  <Th>Amount</Th><Th>Paid</Th><Th>Pending</Th><Th>Status</Th><Th>Actions</Th>
+                  <Th width="120px">Bill No.</Th>
+                  <Th width="180px">Party</Th>
+                  <Th width="110px">Bill Date</Th>
+                  <Th width="110px">Due Date</Th>
+                  <Th width="120px" align="right">Amount</Th>
+                  <Th width="110px" align="right">Paid</Th>
+                  <Th width="110px" align="right">Pending</Th>
+                  <Th width="100px" align="center">Status</Th>
+                  <Th width="90px" align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {bills.length === 0 && <Tr><Td className="text-center text-gray-400 py-8" colSpan={9}>No bills found</Td></Tr>}
+                {bills.length === 0 && <Tr><Td className="text-center text-gray-400 py-10" colSpan={9}>No bills found</Td></Tr>}
                 {bills.map(bill => (
                   <Tr key={bill._id} onClick={() => navigate(`/bills/${bill._id}`)}>
                     <Td><span className="font-mono text-sm font-semibold text-gray-900">{bill.billNumber}</span></Td>
                     <Td>
-                      <div>
-                        <p className="font-medium text-gray-900">{bill.party?.name}</p>
-                        <p className="text-xs text-gray-400">{bill.party?.mobile}</p>
-                      </div>
+                      <p className="font-medium text-gray-900">{bill.party?.name}</p>
+                      <p className="text-xs text-gray-400">{bill.party?.mobile}</p>
                     </Td>
-                    <Td>{formatDate(bill.billDate)}</Td>
-                    <Td><span className={bill.status === 'overdue' ? 'text-red-600 font-medium' : ''}>{formatDate(bill.dueDate)}</span></Td>
-                    <Td className="font-semibold">{formatCurrency(bill.grandTotal)}</Td>
-                    <Td className="text-green-600">{formatCurrency(bill.paidAmount)}</Td>
-                    <Td className={bill.pendingAmount > 0 ? 'text-red-600 font-semibold' : 'text-green-600'}>{formatCurrency(bill.pendingAmount)}</Td>
-                    <Td><Badge status={bill.status} /></Td>
-                    <Td>
-                      <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => navigate(`/bills/${bill._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500"><Eye className="w-4 h-4" /></button>
-                        <button onClick={e => handleDownloadPDF(e, bill._id, bill.billNumber)} disabled={downloading === bill._id} className="p-1.5 rounded hover:bg-blue-50 text-blue-500">
+                    <Td><span className="text-sm text-gray-700">{formatDate(bill.billDate)}</span></Td>
+                    <Td><span className={`text-sm ${bill.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-700'}`}>{formatDate(bill.dueDate)}</span></Td>
+                    <Td align="right"><span className="font-semibold text-gray-900">{formatCurrency(bill.grandTotal)}</span></Td>
+                    <Td align="right"><span className="text-green-600 font-medium">{formatCurrency(bill.paidAmount)}</span></Td>
+                    <Td align="right"><span className={`font-semibold ${bill.pendingAmount > 0 ? 'text-red-600' : 'text-green-600'}`}>{formatCurrency(bill.pendingAmount)}</span></Td>
+                    <Td align="center"><Badge status={bill.status} /></Td>
+                    <Td align="center">
+                      <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => navigate(`/bills/${bill._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="View"><Eye className="w-4 h-4" /></button>
+                        <button onClick={e => handleDownloadPDF(e, bill._id, bill.billNumber)} disabled={downloading === bill._id} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600" title="Download PDF">
                           {downloading === bill._id ? <span className="w-4 h-4 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin block" /> : <Download className="w-4 h-4" />}
                         </button>
                         {bill.status !== 'cancelled' && bill.status !== 'paid' && (
-                          <button onClick={e => handleCancel(e, bill._id)} className="p-1.5 rounded hover:bg-red-50 text-red-400"><XCircle className="w-4 h-4" /></button>
+                          <button onClick={e => handleCancel(e, bill._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500" title="Cancel"><XCircle className="w-4 h-4" /></button>
                         )}
                       </div>
                     </Td>

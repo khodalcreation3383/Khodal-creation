@@ -29,7 +29,6 @@ function PartyForm({ party, onSave, onClose }) {
     mapUrl: party?.mapLocation?.mapUrl || ''
   })
   const [saving, setSaving] = useState(false)
-
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
   const handleSubmit = async (e) => {
@@ -65,14 +64,14 @@ function PartyForm({ party, onSave, onClose }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <div className="col-span-2">
           <label className="label">Party Name *</label>
           <input className="input-field" value={form.name} onChange={e => set('name', e.target.value)} placeholder="Business/Person name" required />
         </div>
         <div>
           <label className="label">Mobile *</label>
-          <input className="input-field" value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="+91 98765 43210" required />
+          <input className="input-field" value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="98765 43210" required />
         </div>
         <div>
           <label className="label">Alt. Mobile</label>
@@ -88,8 +87,8 @@ function PartyForm({ party, onSave, onClose }) {
         </div>
       </div>
 
-      <div className="border-t border-gray-100 pt-4">
-        <p className="text-sm font-semibold text-gray-700 mb-3">Address</p>
+      <div className="border-t border-gray-100 pt-3">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Address</p>
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2">
             <label className="label">Street</label>
@@ -108,18 +107,18 @@ function PartyForm({ party, onSave, onClose }) {
             <input className="input-field" value={form['address.pincode']} onChange={e => set('address.pincode', e.target.value)} placeholder="395001" />
           </div>
           <div>
-            <label className="label">Map URL (optional)</label>
+            <label className="label">Map URL</label>
             <input className="input-field" value={form.mapUrl} onChange={e => set('mapUrl', e.target.value)} placeholder="Google Maps link" />
           </div>
         </div>
       </div>
 
-      <div className="border-t border-gray-100 pt-4">
-        <p className="text-sm font-semibold text-gray-700 mb-3">Business Terms</p>
+      <div className="border-t border-gray-100 pt-3">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Business Terms</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="label">Referred By</label>
-            <input className="input-field" value={form.referredBy} onChange={e => set('referredBy', e.target.value)} placeholder="Who referred this party?" />
+            <input className="input-field" value={form.referredBy} onChange={e => set('referredBy', e.target.value)} placeholder="Who referred?" />
           </div>
           <div>
             <label className="label">Payment Terms (days)</label>
@@ -133,7 +132,7 @@ function PartyForm({ party, onSave, onClose }) {
             <label className="label">Commission Type</label>
             <select className="input-field" value={form.commissionType} onChange={e => set('commissionType', e.target.value)}>
               <option value="percentage">Percentage (%)</option>
-              <option value="fixed">Fixed Amount (₹)</option>
+              <option value="fixed">Fixed Amount (Rs.)</option>
             </select>
           </div>
         </div>
@@ -144,7 +143,7 @@ function PartyForm({ party, onSave, onClose }) {
         <textarea className="input-field" rows={2} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Any additional notes..." />
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 pt-1 border-t border-gray-100">
         <button type="submit" disabled={saving} className="btn-primary flex-1 justify-center">
           {saving ? 'Saving...' : party?._id ? 'Update Party' : 'Create Party'}
         </button>
@@ -212,16 +211,12 @@ export default function PartiesPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 truncate">{party.name}</p>
-                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                      <Phone className="w-3 h-3" />{party.mobile}
-                    </p>
+                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3" />{party.mobile}</p>
                     {party.address?.city && <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5"><MapPin className="w-3 h-3" />{party.address.city}</p>}
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-sm font-semibold text-gray-900">{formatCurrency(party.totalBilled)}</p>
-                    <p className={`text-xs font-medium ${party.totalPending > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {formatCurrency(party.totalPending)} pending
-                    </p>
+                    <p className={`text-xs font-medium ${party.totalPending > 0 ? 'text-red-600' : 'text-green-600'}`}>{formatCurrency(party.totalPending)} pending</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-3" onClick={e => e.stopPropagation()}>
@@ -233,53 +228,67 @@ export default function PartiesPage() {
             ))}
           </div>
 
-          {/* Desktop table view */}
-          <div className="hidden sm:block overflow-x-auto">
+          {/* Desktop table */}
+          <div className="hidden sm:block">
             <Table>
               <Thead>
                 <Tr>
-                  <Th>Party Name</Th>
-                  <Th>Contact</Th>
-                  <Th>GST Number</Th>
-                  <Th>Referred By</Th>
-                  <Th>Terms</Th>
-                  <Th>Total Billed</Th>
-                  <Th>Pending</Th>
-                  <Th>Actions</Th>
+                  <Th width="200px">Party Name</Th>
+                  <Th width="140px">Contact</Th>
+                  <Th width="170px">GST Number</Th>
+                  <Th width="130px">Referred By</Th>
+                  <Th width="80px" align="center">Terms</Th>
+                  <Th width="130px" align="right">Total Billed</Th>
+                  <Th width="120px" align="right">Pending</Th>
+                  <Th width="100px" align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {parties.length === 0 && (
-                  <Tr><Td className="text-center text-gray-400 py-8" colSpan={8}>No parties found</Td></Tr>
+                  <Tr><Td colSpan={8} className="text-center text-gray-400 py-10">No parties found</Td></Tr>
                 )}
                 {parties.map(party => (
                   <Tr key={party._id} onClick={() => navigate(`/parties/${party._id}`)}>
                     <Td>
-                      <div>
-                        <p className="font-medium text-gray-900">{party.name}</p>
-                        {party.address?.city && <p className="text-xs text-gray-400 flex items-center gap-1"><MapPin className="w-3 h-3" />{party.address.city}</p>}
+                      <p className="font-semibold text-gray-900">{party.name}</p>
+                      {party.address?.city && (
+                        <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" />{party.address.city}
+                        </p>
+                      )}
+                    </Td>
+                    <Td>
+                      <div className="flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                        <span className="text-gray-700">{party.mobile}</span>
                       </div>
                     </Td>
                     <Td>
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <Phone className="w-3.5 h-3.5" />
-                        <span className="text-sm">{party.mobile}</span>
-                      </div>
+                      <span className="font-mono text-xs text-gray-600 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+                        {party.gstNumber || '—'}
+                      </span>
                     </Td>
-                    <Td><span className="font-mono text-xs">{party.gstNumber || '-'}</span></Td>
-                    <Td>{party.referredBy || '-'}</Td>
-                    <Td>{party.paymentTermsDays}d</Td>
-                    <Td className="font-semibold">{formatCurrency(party.totalBilled)}</Td>
                     <Td>
+                      <span className="text-sm text-gray-600">{party.referredBy || '—'}</span>
+                    </Td>
+                    <Td align="center">
+                      <span className="text-sm font-medium text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+                        {party.paymentTermsDays}d
+                      </span>
+                    </Td>
+                    <Td align="right">
+                      <span className="font-semibold text-gray-900">{formatCurrency(party.totalBilled)}</span>
+                    </Td>
+                    <Td align="right">
                       <span className={`font-semibold ${party.totalPending > 0 ? 'text-red-600' : 'text-green-600'}`}>
                         {formatCurrency(party.totalPending)}
                       </span>
                     </Td>
-                    <Td>
-                      <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => navigate(`/parties/${party._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-500"><Eye className="w-4 h-4" /></button>
-                        <button onClick={() => { setEditParty(party); setShowModal(true) }} className="p-1.5 rounded hover:bg-blue-50 text-blue-500"><Edit2 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(party._id)} className="p-1.5 rounded hover:bg-red-50 text-red-400"><Trash2 className="w-4 h-4" /></button>
+                    <Td align="center">
+                      <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => navigate(`/parties/${party._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="View"><Eye className="w-4 h-4" /></button>
+                        <button onClick={() => { setEditParty(party); setShowModal(true) }} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600" title="Edit"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(party._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500" title="Delete"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </Td>
                   </Tr>
@@ -291,7 +300,7 @@ export default function PartiesPage() {
         </div>
       )}
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editParty ? 'Edit Party' : 'Add New Party'} size="xl">
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editParty ? 'Edit Party' : 'Add New Party'} size="lg">
         <PartyForm party={editParty} onSave={() => { setShowModal(false); fetchParties() }} onClose={() => setShowModal(false)} />
       </Modal>
     </div>

@@ -169,28 +169,37 @@ export default function StockPage() {
           <>
             <Table>
               <Thead>
-                <Tr><Th>Date</Th><Th>Design</Th><Th>Type</Th><Th>Qty</Th><Th>Color</Th><Th>Fabric</Th><Th>Party</Th><Th>Notes</Th></Tr>
+                <Tr>
+                  <Th width="110px">Date</Th>
+                  <Th width="200px">Design</Th>
+                  <Th width="90px" align="center">Type</Th>
+                  <Th width="70px" align="center">Qty</Th>
+                  <Th width="100px">Color</Th>
+                  <Th width="120px">Fabric</Th>
+                  <Th width="150px">Party</Th>
+                  <Th>Notes</Th>
+                </Tr>
               </Thead>
               <Tbody>
-                {entries.length === 0 && <Tr><Td className="text-center text-gray-400 py-8" colSpan={8}>No entries found</Td></Tr>}
+                {entries.length === 0 && <Tr><Td className="text-center text-gray-400 py-10" colSpan={8}>No entries found</Td></Tr>}
                 {entries.map(e => (
                   <Tr key={e._id}>
-                    <Td>{formatDate(e.entryDate)}</Td>
+                    <Td><span className="text-sm text-gray-700 whitespace-nowrap">{formatDate(e.entryDate)}</span></Td>
                     <Td>
                       <div className="flex items-center gap-2">
-                        {e.design?.image && <img src={e.design.image} alt="" className="w-8 h-8 rounded object-cover" />}
+                        {e.design?.image && <img src={e.design.image} alt="" className="w-8 h-8 rounded object-cover flex-shrink-0" />}
                         <div>
-                          <p className="text-xs font-mono text-gray-500">{e.design?.designNumber}</p>
-                          <p className="text-sm font-medium">{e.design?.name}</p>
+                          <p className="text-xs font-mono text-gray-400">{e.design?.designNumber}</p>
+                          <p className="text-sm font-medium text-gray-900">{e.design?.name}</p>
                         </div>
                       </div>
                     </Td>
-                    <Td><Badge status={e.type} /></Td>
-                    <Td className="font-bold text-lg">{e.quantity}</Td>
-                    <Td>{e.color || '-'}</Td>
-                    <Td>{e.fabricType || e.design?.fabricType || '-'}</Td>
-                    <Td>{e.party?.name || '-'}</Td>
-                    <Td className="text-gray-500 text-xs">{e.notes || '-'}</Td>
+                    <Td align="center"><Badge status={e.type} /></Td>
+                    <Td align="center"><span className="font-bold text-lg text-gray-900">{e.quantity}</span></Td>
+                    <Td><span className="text-sm text-gray-700">{e.color || '—'}</span></Td>
+                    <Td><span className="text-sm text-gray-700">{e.fabricType || e.design?.fabricType || '—'}</span></Td>
+                    <Td><span className="text-sm text-gray-700">{e.party?.name || '—'}</span></Td>
+                    <Td><span className="text-xs text-gray-500">{e.notes || '—'}</span></Td>
                   </Tr>
                 ))}
               </Tbody>

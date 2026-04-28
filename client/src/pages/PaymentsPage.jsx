@@ -125,36 +125,44 @@ export default function PaymentsPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th>Date</Th><Th>Party</Th><Th>Bill No.</Th><Th>Method</Th>
-                  <Th>Amount</Th><Th>Reference</Th><Th>Cheque Status</Th><Th>Notes</Th>
+                  <Th width="110px">Date</Th>
+                  <Th width="180px">Party</Th>
+                  <Th width="120px">Bill No.</Th>
+                  <Th width="110px" align="center">Method</Th>
+                  <Th width="120px" align="right">Amount</Th>
+                  <Th width="140px">Reference</Th>
+                  <Th width="130px" align="center">Cheque Status</Th>
+                  <Th>Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {payments.length === 0 && <Tr><Td className="text-center text-gray-400 py-8" colSpan={8}>No payments found</Td></Tr>}
+                {payments.length === 0 && <Tr><Td className="text-center text-gray-400 py-10" colSpan={8}>No payments found</Td></Tr>}
                 {payments.map(pmt => (
                   <Tr key={pmt._id}>
-                    <Td className="whitespace-nowrap">{formatDate(pmt.paymentDate)}</Td>
+                    <Td><span className="text-sm text-gray-700 whitespace-nowrap">{formatDate(pmt.paymentDate)}</span></Td>
                     <Td>
-                      <div>
-                        <p className="font-medium text-gray-900">{pmt.party?.name}</p>
-                        <p className="text-xs text-gray-400">{pmt.party?.mobile}</p>
-                      </div>
+                      <p className="font-medium text-gray-900">{pmt.party?.name}</p>
+                      <p className="text-xs text-gray-400">{pmt.party?.mobile}</p>
                     </Td>
-                    <Td><span className="font-mono text-xs text-gray-700">{pmt.bill?.billNumber || '-'}</span></Td>
-                    <Td><Badge status={pmt.method} /></Td>
-                    <Td className="font-bold text-green-700 whitespace-nowrap">{formatCurrency(pmt.amount)}</Td>
-                    <Td className="text-xs font-mono text-gray-600">{pmt.chequeNumber || pmt.transactionId || pmt.upiRef || '-'}</Td>
-                    <Td>
+                    <Td><span className="font-mono text-xs text-gray-700 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">{pmt.bill?.billNumber || '—'}</span></Td>
+                    <Td align="center"><Badge status={pmt.method} /></Td>
+                    <Td align="right"><span className="font-bold text-green-700">{formatCurrency(pmt.amount)}</span></Td>
+                    <Td><span className="text-xs font-mono text-gray-600">{pmt.chequeNumber || pmt.transactionId || pmt.upiRef || '—'}</span></Td>
+                    <Td align="center">
                       {pmt.method === 'cheque' ? (
-                        <select value={pmt.chequeStatus || 'pending'} onChange={e => updateChequeStatus(pmt._id, e.target.value)}
-                          className="text-xs border border-gray-200 rounded px-2 py-1" onClick={e => e.stopPropagation()}>
+                        <select
+                          value={pmt.chequeStatus || 'pending'}
+                          onChange={e => updateChequeStatus(pmt._id, e.target.value)}
+                          className="text-xs border border-gray-200 rounded px-2 py-1 bg-white"
+                          onClick={e => e.stopPropagation()}
+                        >
                           <option value="pending">Pending</option>
                           <option value="cleared">Cleared</option>
                           <option value="bounced">Bounced</option>
                         </select>
-                      ) : '-'}
+                      ) : <span className="text-gray-300">—</span>}
                     </Td>
-                    <Td className="text-xs text-gray-500">{pmt.notes || '-'}</Td>
+                    <Td><span className="text-xs text-gray-500">{pmt.notes || '—'}</span></Td>
                   </Tr>
                 ))}
               </Tbody>

@@ -14,6 +14,7 @@ export default function CreateBillPage() {
   const [designs, setDesigns] = useState([])
   const [settings, setSettings] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
 
   const [form, setForm] = useState({
     partyId: preselectedPartyId || '',
@@ -33,6 +34,7 @@ export default function CreateBillPage() {
   const [selectedParty, setSelectedParty] = useState(null)
 
   useEffect(() => {
+    setLoadingData(true)
     Promise.all([
       api.get('/parties', { params: { limit: 200, isActive: true } }),
       api.get('/designs', { params: { limit: 200, isActive: true } }),
@@ -44,7 +46,7 @@ export default function CreateBillPage() {
       if (s.data.data?.invoice?.termsAndConditions) {
         setForm(prev => ({ ...prev, termsAndConditions: s.data.data.invoice.termsAndConditions }))
       }
-    })
+    }).finally(() => setLoadingData(false))
   }, [])
 
   useEffect(() => {
@@ -122,10 +124,27 @@ export default function CreateBillPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="sm:col-span-2 lg:col-span-1">
               <label className="label">Party *</label>
-              <select className="input-field" value={form.partyId} onChange={e => setForm(p => ({ ...p, partyId: e.target.value }))} required>
-                <option value="">Select party</option>
-                {parties.map(p => <option key={p._id} value={p._id}>{p.name} - {p.mobile}</option>)}
-              </select>
+              <div className="relative">
+                <select
+                  className="input-field"
+                  value={form.partyId}
+                  onChange={e => setForm(p => ({ ...p, partyId: e.target.value }))}
+                  required
+                  disabled={loadingData}
+                >
+                  <option value="">
+                    {loadingData ? 'Loading parties...' : parties.length === 0 ? 'No parties found' : 'Select party'}
+                  </option>
+                  {parties.map(p => (
+                    <option key={p._id} value={p._id}>{p.name} — {p.mobile}</option>
+                  ))}
+                </select>
+                {loadingData && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin block" />
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label className="label">Bill Date</label>
@@ -169,10 +188,27 @@ export default function CreateBillPage() {
                     )}
                     <div className="flex-1">
                       <label className="label">Design *</label>
-                      <select className="input-field" value={item.designId} onChange={e => setItem(idx, 'designId', e.target.value)} required>
-                        <option value="">Select design</option>
-                        {designs.map(d => <option key={d._id} value={d._id}>{d.designNumber} - {d.name}</option>)}
-                      </select>
+                      <div className="relative">
+                        <select
+                          className="input-field"
+                          value={item.designId}
+                          onChange={e => setItem(idx, 'designId', e.target.value)}
+                          required
+                          disabled={loadingData}
+                        >
+                          <option value="">
+                            {loadingData ? 'Loading designs...' : designs.length === 0 ? 'No designs found' : 'Select design'}
+                          </option>
+                          {designs.map(d => (
+                            <option key={d._id} value={d._id}>{d.designNumber} — {d.name} ({d.fabricType})</option>
+                          ))}
+                        </select>
+                        {loadingData && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin block" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     {items.length > 1 && (
                       <button type="button" onClick={() => removeItem(idx)} className="p-1.5 rounded hover:bg-red-50 text-red-400 flex-shrink-0 mt-5">
