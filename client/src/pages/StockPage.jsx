@@ -206,7 +206,7 @@ export default function StockPage() {
         {loading ? <PageLoader /> : activeTab === 'entries' ? (
           <>
             <Table>
-              <ColGroup cols={['100px', '190px', '110px', '60px', '90px', '110px', '130px', 'auto']} />
+              <ColGroup cols={['11%','22%','12%','7%','10%','12%','14%','12%']} />
               <Thead>
                 <Tr>
                   <Th>Date</Th>
@@ -227,18 +227,18 @@ export default function StockPage() {
                     <Td>
                       <div className="flex items-center gap-2">
                         {e.design?.image && <img src={e.design.image} alt="" className="w-8 h-8 rounded object-cover flex-shrink-0" />}
-                        <div>
-                          <p className="text-xs font-mono text-gray-400">{e.design?.designNumber}</p>
-                          <p className="text-sm font-medium text-gray-900">{e.design?.name}</p>
+                        <div className="min-w-0">
+                          <p className="text-xs font-mono text-gray-400 truncate">{e.design?.designNumber}</p>
+                          <p className="text-sm font-medium text-gray-900 truncate">{e.design?.name}</p>
                         </div>
                       </div>
                     </Td>
                     <Td align="center"><Badge status={e.type} /></Td>
-                    <Td align="center"><span className="font-bold text-lg text-gray-900">{e.quantity}</span></Td>
-                    <Td><span className="text-sm text-gray-700">{e.color || '—'}</span></Td>
-                    <Td><span className="text-sm text-gray-700">{e.fabricType || e.design?.fabricType || '—'}</span></Td>
-                    <Td><span className="text-sm text-gray-700">{e.party?.name || '—'}</span></Td>
-                    <Td><span className="text-xs text-gray-500">{e.notes || '—'}</span></Td>
+                    <Td align="center"><span className="font-bold text-gray-900">{e.quantity}</span></Td>
+                    <Td><span className="text-sm text-gray-700 truncate block">{e.color || '—'}</span></Td>
+                    <Td><span className="text-sm text-gray-700 truncate block">{e.fabricType || e.design?.fabricType || '—'}</span></Td>
+                    <Td><span className="text-sm text-gray-700 truncate block">{e.party?.name || '—'}</span></Td>
+                    <Td><span className="text-xs text-gray-500 truncate block">{e.notes || '—'}</span></Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -247,7 +247,7 @@ export default function StockPage() {
           </>
         ) : (
           <Table>
-            <ColGroup cols={['180px', '110px', '100px', '110px', '110px', '90px', '110px']} />
+            <ColGroup cols={['22%','14%','12%','13%','13%','13%','13%']} />
             <Thead>
               <Tr>
                 <Th>Design</Th>
@@ -265,21 +265,21 @@ export default function StockPage() {
                 <Tr key={item.design._id}>
                   <Td>
                     <div className="flex items-center gap-2">
-                      {item.design.image && <img src={item.design.image} alt="" className="w-8 h-8 rounded object-cover" />}
-                      <div>
-                        <p className="text-xs font-mono text-gray-500">{item.design.designNumber}</p>
-                        <p className="text-sm font-medium">{item.design.name}</p>
+                      {item.design.image && <img src={item.design.image} alt="" className="w-8 h-8 rounded object-cover flex-shrink-0" />}
+                      <div className="min-w-0">
+                        <p className="text-xs font-mono text-gray-500 truncate">{item.design.designNumber}</p>
+                        <p className="text-sm font-medium truncate">{item.design.name}</p>
                       </div>
                     </div>
                   </Td>
-                  <Td>{item.design.fabricType}</Td>
-                  <Td>{formatCurrency(item.design.pricePerPiece)}</Td>
-                  <Td className="text-green-600 font-semibold">{item.totalInward}</Td>
-                  <Td className="text-red-600 font-semibold">{item.totalOutward}</Td>
-                  <Td>
-                    <span className={`font-bold text-lg ${item.available > 0 ? 'text-gray-900' : 'text-red-500'}`}>{item.available}</span>
+                  <Td><span className="truncate block">{item.design.fabricType}</span></Td>
+                  <Td align="right">{formatCurrency(item.design.pricePerPiece)}</Td>
+                  <Td align="center" className="text-green-600 font-semibold">{item.totalInward}</Td>
+                  <Td align="center" className="text-red-600 font-semibold">{item.totalOutward}</Td>
+                  <Td align="center">
+                    <span className={`font-bold ${item.available > 0 ? 'text-gray-900' : 'text-red-500'}`}>{item.available}</span>
                   </Td>
-                  <Td className="font-semibold">{formatCurrency(item.stockValue)}</Td>
+                  <Td align="right" className="font-semibold">{formatCurrency(item.stockValue)}</Td>
                 </Tr>
               ))}
             </Tbody>

@@ -231,7 +231,7 @@ export default function PartiesPage() {
           {/* Desktop table */}
           <div className="hidden sm:block">
             <Table>
-              <ColGroup cols={['180px', '140px', '160px', '130px', '70px', '110px', '110px', '90px']} />
+              <ColGroup cols={['20%','15%','18%','13%','8%','12%','12%','12%']} />
               <Thead>
                 <Tr>
                   <Th>Party Name</Th>
@@ -251,26 +251,26 @@ export default function PartiesPage() {
                 {parties.map(party => (
                   <Tr key={party._id} onClick={() => navigate(`/parties/${party._id}`)}>
                     <Td>
-                      <p className="font-semibold text-gray-900">{party.name}</p>
+                      <p className="font-semibold text-gray-900 truncate">{party.name}</p>
                       {party.address?.city && (
-                        <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                          <MapPin className="w-3 h-3" />{party.address.city}
+                        <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5 truncate">
+                          <MapPin className="w-3 h-3 flex-shrink-0" />{party.address.city}
                         </p>
                       )}
                     </Td>
                     <Td>
                       <div className="flex items-center gap-1.5">
                         <Phone className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                        <span className="text-gray-700">{party.mobile}</span>
+                        <span className="text-gray-700 truncate">{party.mobile}</span>
                       </div>
                     </Td>
                     <Td>
-                      <span className="font-mono text-xs text-gray-600 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+                      <span className="font-mono text-xs text-gray-600 truncate block">
                         {party.gstNumber || '—'}
                       </span>
                     </Td>
                     <Td>
-                      <span className="text-sm text-gray-600">{party.referredBy || '—'}</span>
+                      <span className="text-sm text-gray-600 truncate block">{party.referredBy || '—'}</span>
                     </Td>
                     <Td align="center">
                       <span className="text-sm font-medium text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
@@ -287,9 +287,9 @@ export default function PartiesPage() {
                     </Td>
                     <Td align="center">
                       <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => navigate(`/parties/${party._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="View"><Eye className="w-4 h-4" /></button>
-                        <button onClick={() => { setEditParty(party); setShowModal(true) }} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600" title="Edit"><Edit2 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(party._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => navigate(`/parties/${party._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700"><Eye className="w-4 h-4" /></button>
+                        <button onClick={() => { setEditParty(party); setShowModal(true) }} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(party._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </Td>
                   </Tr>

@@ -123,7 +123,7 @@ export default function PaymentsPage() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <Table>
-              <ColGroup cols={['100px', '170px', '120px', '100px', '100px', '130px', '120px', 'auto']} />
+              <ColGroup cols={['11%','18%','13%','10%','11%','13%','13%','11%']} />
               <Thead>
                 <Tr>
                   <Th>Date</Th>
@@ -142,28 +142,24 @@ export default function PaymentsPage() {
                   <Tr key={pmt._id}>
                     <Td><span className="text-sm text-gray-700 whitespace-nowrap">{formatDate(pmt.paymentDate)}</span></Td>
                     <Td>
-                      <p className="font-medium text-gray-900">{pmt.party?.name}</p>
-                      <p className="text-xs text-gray-400">{pmt.party?.mobile}</p>
+                      <p className="font-medium text-gray-900 truncate">{pmt.party?.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{pmt.party?.mobile}</p>
                     </Td>
-                    <Td><span className="font-mono text-xs text-gray-700 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">{pmt.bill?.billNumber || '—'}</span></Td>
+                    <Td><span className="font-mono text-xs text-gray-700 truncate block">{pmt.bill?.billNumber || '—'}</span></Td>
                     <Td align="center"><Badge status={pmt.method} /></Td>
                     <Td align="right"><span className="font-bold text-green-700">{formatCurrency(pmt.amount)}</span></Td>
-                    <Td><span className="text-xs font-mono text-gray-600">{pmt.chequeNumber || pmt.transactionId || pmt.upiRef || '—'}</span></Td>
+                    <Td><span className="text-xs font-mono text-gray-600 truncate block">{pmt.chequeNumber || pmt.transactionId || pmt.upiRef || '—'}</span></Td>
                     <Td align="center">
                       {pmt.method === 'cheque' ? (
-                        <select
-                          value={pmt.chequeStatus || 'pending'}
-                          onChange={e => updateChequeStatus(pmt._id, e.target.value)}
-                          className="text-xs border border-gray-200 rounded px-2 py-1 bg-white"
-                          onClick={e => e.stopPropagation()}
-                        >
+                        <select value={pmt.chequeStatus || 'pending'} onChange={e => updateChequeStatus(pmt._id, e.target.value)}
+                          className="text-xs border border-gray-200 rounded px-2 py-1 bg-white w-full" onClick={e => e.stopPropagation()}>
                           <option value="pending">Pending</option>
                           <option value="cleared">Cleared</option>
                           <option value="bounced">Bounced</option>
                         </select>
                       ) : <span className="text-gray-300">—</span>}
                     </Td>
-                    <Td><span className="text-xs text-gray-500">{pmt.notes || '—'}</span></Td>
+                    <Td><span className="text-xs text-gray-500 truncate block">{pmt.notes || '—'}</span></Td>
                   </Tr>
                 ))}
               </Tbody>

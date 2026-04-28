@@ -126,7 +126,7 @@ export default function BillsPage() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <Table>
-              <ColGroup cols={['130px', '180px', '100px', '100px', '110px', '90px', '90px', '90px', '80px']} />
+              <ColGroup cols={['13%','19%','11%','11%','11%','9%','9%','9%','8%']} />
               <Thead>
                 <Tr>
                   <Th>Bill No.</Th>
@@ -144,25 +144,25 @@ export default function BillsPage() {
                 {bills.length === 0 && <Tr><Td className="text-center text-gray-400 py-10" colSpan={9}>No bills found</Td></Tr>}
                 {bills.map(bill => (
                   <Tr key={bill._id} onClick={() => navigate(`/bills/${bill._id}`)}>
-                    <Td><span className="font-mono text-sm font-semibold text-gray-900">{bill.billNumber}</span></Td>
+                    <Td><span className="font-mono text-sm font-semibold text-gray-900 truncate block">{bill.billNumber}</span></Td>
                     <Td>
-                      <p className="font-medium text-gray-900">{bill.party?.name}</p>
-                      <p className="text-xs text-gray-400">{bill.party?.mobile}</p>
+                      <p className="font-medium text-gray-900 truncate">{bill.party?.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{bill.party?.mobile}</p>
                     </Td>
-                    <Td><span className="text-sm text-gray-700">{formatDate(bill.billDate)}</span></Td>
-                    <Td><span className={`text-sm ${bill.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-700'}`}>{formatDate(bill.dueDate)}</span></Td>
+                    <Td><span className="text-sm text-gray-700 whitespace-nowrap">{formatDate(bill.billDate)}</span></Td>
+                    <Td><span className={`text-sm whitespace-nowrap ${bill.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-700'}`}>{formatDate(bill.dueDate)}</span></Td>
                     <Td align="right"><span className="font-semibold text-gray-900">{formatCurrency(bill.grandTotal)}</span></Td>
                     <Td align="right"><span className="text-green-600 font-medium">{formatCurrency(bill.paidAmount)}</span></Td>
                     <Td align="right"><span className={`font-semibold ${bill.pendingAmount > 0 ? 'text-red-600' : 'text-green-600'}`}>{formatCurrency(bill.pendingAmount)}</span></Td>
                     <Td align="center"><Badge status={bill.status} /></Td>
                     <Td align="center">
                       <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => navigate(`/bills/${bill._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700" title="View"><Eye className="w-4 h-4" /></button>
-                        <button onClick={e => handleDownloadPDF(e, bill._id, bill.billNumber)} disabled={downloading === bill._id} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600" title="Download PDF">
+                        <button onClick={() => navigate(`/bills/${bill._id}`)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700"><Eye className="w-4 h-4" /></button>
+                        <button onClick={e => handleDownloadPDF(e, bill._id, bill.billNumber)} disabled={downloading === bill._id} className="p-1.5 rounded hover:bg-blue-50 text-gray-400 hover:text-blue-600">
                           {downloading === bill._id ? <span className="w-4 h-4 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin block" /> : <Download className="w-4 h-4" />}
                         </button>
                         {bill.status !== 'cancelled' && bill.status !== 'paid' && (
-                          <button onClick={e => handleCancel(e, bill._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500" title="Cancel"><XCircle className="w-4 h-4" /></button>
+                          <button onClick={e => handleCancel(e, bill._id)} className="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500"><XCircle className="w-4 h-4" /></button>
                         )}
                       </div>
                     </Td>

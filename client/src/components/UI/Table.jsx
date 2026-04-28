@@ -1,18 +1,20 @@
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 
-// Table wrapper - no fixed layout, auto sizing with overflow scroll
 export function Table({ children, className = '' }) {
   return (
     <div className={`w-full overflow-x-auto ${className}`}>
-      <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+      <table
+        className="w-full text-sm"
+        style={{ borderCollapse: 'collapse', tableLayout: 'fixed', width: '100%' }}
+      >
         {children}
       </table>
     </div>
   )
 }
 
-// ColGroup for explicit column widths - use this inside Table before Thead
-// Example: <ColGroup cols={['180px', '140px', 'auto', '100px']} />
+// Use this to define column widths. Widths must add up to 100%.
+// Example: <ColGroup cols={['20%','15%','15%','10%','10%','10%','10%','10%']} />
 export function ColGroup({ cols = [] }) {
   return (
     <colgroup>
@@ -36,11 +38,11 @@ export function Th({ children, sortKey, currentSort, onSort, className = '', ali
   const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
     <th
-      className={`px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 whitespace-nowrap ${alignClass} ${sortKey ? 'cursor-pointer hover:bg-gray-100 select-none' : ''} ${className}`}
+      className={`px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 overflow-hidden ${alignClass} ${sortKey ? 'cursor-pointer hover:bg-gray-100 select-none' : ''} ${className}`}
       onClick={() => sortKey && onSort && onSort(sortKey)}
     >
-      <div className={`flex items-center gap-1 ${align === 'right' ? 'justify-end' : align === 'center' ? 'justify-center' : ''}`}>
-        {children}
+      <div className={`flex items-center gap-1 truncate ${align === 'right' ? 'justify-end' : align === 'center' ? 'justify-center' : ''}`}>
+        <span className="truncate">{children}</span>
         {sortKey && (
           <span className="text-gray-300 flex-shrink-0">
             {isActive
@@ -75,7 +77,7 @@ export function Td({ children, className = '', colSpan, align = 'left' }) {
   const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
     <td
-      className={`px-3 py-3 text-sm text-gray-700 align-middle ${alignClass} ${className}`}
+      className={`px-3 py-3 text-sm text-gray-700 align-middle overflow-hidden ${alignClass} ${className}`}
       colSpan={colSpan}
     >
       {children}
@@ -90,7 +92,7 @@ export function TableSkeleton({ cols = 5, rows = 5 }) {
         <Tr key={i}>
           {Array.from({ length: cols }).map((_, j) => (
             <Td key={j}>
-              <div className="h-4 bg-gray-100 rounded animate-pulse" style={{ width: `${60 + (j * 13) % 35}%` }} />
+              <div className="h-4 bg-gray-100 rounded animate-pulse" />
             </Td>
           ))}
         </Tr>
