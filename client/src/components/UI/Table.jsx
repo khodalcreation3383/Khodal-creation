@@ -3,7 +3,7 @@ import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 export function Table({ children, className = '' }) {
   return (
     <div className={`w-full overflow-x-auto ${className}`}>
-      <table className="w-full text-sm border-collapse" style={{ tableLayout: 'fixed' }}>{children}</table>
+      <table className="w-full text-sm" style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>{children}</table>
     </div>
   )
 }
@@ -21,7 +21,7 @@ export function Th({ children, sortKey, currentSort, onSort, className = '', ali
   const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
     <th
-      style={width ? { width, minWidth: width } : undefined}
+      style={width ? { width } : undefined}
       className={`px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 whitespace-nowrap ${alignClass} ${sortKey ? 'cursor-pointer hover:bg-gray-100 select-none' : ''} ${className}`}
       onClick={() => sortKey && onSort && onSort(sortKey)}
     >
@@ -69,7 +69,6 @@ export function Td({ children, className = '', colSpan, align = 'left' }) {
   )
 }
 
-// Skeleton loader row for tables
 export function TableSkeleton({ cols = 5, rows = 5 }) {
   return (
     <Tbody>

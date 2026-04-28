@@ -128,15 +128,15 @@ export default function BillsPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th width="110px">Bill No.</Th>
-                  <Th width="160px">Party</Th>
-                  <Th width="100px">Bill Date</Th>
-                  <Th width="100px">Due Date</Th>
-                  <Th width="100px" align="right">Amount</Th>
-                  <Th width="90px" align="right">Paid</Th>
-                  <Th width="90px" align="right">Pending</Th>
-                  <Th width="90px" align="center">Status</Th>
-                  <Th width="80px" align="center">Actions</Th>
+                  <Th width="13%">Bill No.</Th>
+                  <Th width="20%">Party</Th>
+                  <Th width="11%">Bill Date</Th>
+                  <Th width="11%">Due Date</Th>
+                  <Th width="12%" align="right">Amount</Th>
+                  <Th width="10%" align="right">Paid</Th>
+                  <Th width="10%" align="right">Pending</Th>
+                  <Th width="10%" align="center">Status</Th>
+                  <Th width="13%" align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>

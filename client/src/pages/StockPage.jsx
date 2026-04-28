@@ -208,14 +208,14 @@ export default function StockPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th width="100px">Date</Th>
-                  <Th width="180px">Design</Th>
-                  <Th width="110px" align="center">Type</Th>
-                  <Th width="60px" align="center">Qty</Th>
-                  <Th width="90px">Color</Th>
-                  <Th width="110px">Fabric</Th>
-                  <Th width="130px">Party</Th>
-                  <Th width="120px">Notes</Th>
+                  <Th width="12%">Date</Th>
+                  <Th width="22%">Design</Th>
+                  <Th width="13%" align="center">Type</Th>
+                  <Th width="8%" align="center">Qty</Th>
+                  <Th width="11%">Color</Th>
+                  <Th width="13%">Fabric</Th>
+                  <Th width="13%">Party</Th>
+                  <Th width="8%">Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -248,13 +248,13 @@ export default function StockPage() {
           <Table>
             <Thead>
               <Tr>
-                <Th width="180px">Design</Th>
-                <Th width="110px">Fabric</Th>
-                <Th width="100px" align="right">Price/Pc</Th>
-                <Th width="110px" align="center">Total Inward</Th>
-                <Th width="110px" align="center">Total Outward</Th>
-                <Th width="90px" align="center">Available</Th>
-                <Th width="110px" align="right">Stock Value</Th>
+                <Th width="25%">Design</Th>
+                <Th width="15%">Fabric</Th>
+                <Th width="13%" align="right">Price/Pc</Th>
+                <Th width="13%" align="center">Total Inward</Th>
+                <Th width="13%" align="center">Total Outward</Th>
+                <Th width="10%" align="center">Available</Th>
+                <Th width="11%" align="right">Stock Value</Th>
               </Tr>
             </Thead>
             <Tbody>
