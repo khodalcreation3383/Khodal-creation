@@ -15,12 +15,17 @@ function AddStockForm({ onSave, onClose }) {
   const [parties, setParties] = useState([])
   const [form, setForm] = useState({ designId: '', type: 'inward', quantity: '', color: '', fabricType: '', notes: '', party: '', referenceType: 'purchase' })
   const [saving, setSaving] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
 
   useEffect(() => {
+    setLoadingData(true)
     Promise.all([
       api.get('/designs', { params: { limit: 100, isActive: true } }),
       api.get('/parties', { params: { limit: 100, isActive: true } })
-    ]).then(([d, p]) => { setDesigns(d.data.data); setParties(p.data.data) })
+    ]).then(([d, p]) => {
+      setDesigns(d.data.data)
+      setParties(p.data.data)
+    }).finally(() => setLoadingData(false))
   }, [])
 
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
@@ -43,10 +48,27 @@ function AddStockForm({ onSave, onClose }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
           <label className="label">Design *</label>
-          <select className="input-field" value={form.designId} onChange={e => set('designId', e.target.value)} required>
-            <option value="">Select design</option>
-            {designs.map(d => <option key={d._id} value={d._id}>{d.designNumber} - {d.name}</option>)}
-          </select>
+          <div className="relative">
+            <select
+              className="input-field"
+              value={form.designId}
+              onChange={e => set('designId', e.target.value)}
+              required
+              disabled={loadingData}
+            >
+              <option value="">
+                {loadingData ? 'Loading designs...' : designs.length === 0 ? 'No designs found' : 'Select design'}
+              </option>
+              {designs.map(d => (
+                <option key={d._id} value={d._id}>{d.designNumber} - {d.name}</option>
+              ))}
+            </select>
+            {loadingData && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin block" />
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <label className="label">Type *</label>
@@ -79,10 +101,26 @@ function AddStockForm({ onSave, onClose }) {
         </div>
         <div>
           <label className="label">Party (optional)</label>
-          <select className="input-field" value={form.party} onChange={e => set('party', e.target.value)}>
-            <option value="">Select party</option>
-            {parties.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
-          </select>
+          <div className="relative">
+            <select
+              className="input-field"
+              value={form.party}
+              onChange={e => set('party', e.target.value)}
+              disabled={loadingData}
+            >
+              <option value="">
+                {loadingData ? 'Loading parties...' : 'Select party (optional)'}
+              </option>
+              {parties.map(p => (
+                <option key={p._id} value={p._id}>{p.name}</option>
+              ))}
+            </select>
+            {loadingData && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin block" />
+              </div>
+            )}
+          </div>
         </div>
         <div className="col-span-2">
           <label className="label">Notes</label>
@@ -90,7 +128,7 @@ function AddStockForm({ onSave, onClose }) {
         </div>
       </div>
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={saving} className="btn-primary flex-1 justify-center">
+        <button type="submit" disabled={saving || loadingData} className="btn-primary flex-1 justify-center">
           {saving ? 'Adding...' : 'Add Stock Entry'}
         </button>
         <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
@@ -170,14 +208,14 @@ export default function StockPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th width="110px">Date</Th>
-                  <Th width="200px">Design</Th>
-                  <Th width="90px" align="center">Type</Th>
-                  <Th width="70px" align="center">Qty</Th>
-                  <Th width="100px">Color</Th>
-                  <Th width="120px">Fabric</Th>
-                  <Th width="150px">Party</Th>
-                  <Th>Notes</Th>
+                  <Th width="100px">Date</Th>
+                  <Th width="180px">Design</Th>
+                  <Th width="110px" align="center">Type</Th>
+                  <Th width="60px" align="center">Qty</Th>
+                  <Th width="90px">Color</Th>
+                  <Th width="110px">Fabric</Th>
+                  <Th width="130px">Party</Th>
+                  <Th width="120px">Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -209,7 +247,15 @@ export default function StockPage() {
         ) : (
           <Table>
             <Thead>
-              <Tr><Th>Design</Th><Th>Fabric</Th><Th>Price/Pc</Th><Th>Total Inward</Th><Th>Total Outward</Th><Th>Available</Th><Th>Stock Value</Th></Tr>
+              <Tr>
+                <Th width="180px">Design</Th>
+                <Th width="110px">Fabric</Th>
+                <Th width="100px" align="right">Price/Pc</Th>
+                <Th width="110px" align="center">Total Inward</Th>
+                <Th width="110px" align="center">Total Outward</Th>
+                <Th width="90px" align="center">Available</Th>
+                <Th width="110px" align="right">Stock Value</Th>
+              </Tr>
             </Thead>
             <Tbody>
               {summary?.summary?.length === 0 && <Tr><Td className="text-center text-gray-400 py-8" colSpan={7}>No designs</Td></Tr>}

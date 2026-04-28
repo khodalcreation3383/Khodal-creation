@@ -125,14 +125,14 @@ export default function PaymentsPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th width="110px">Date</Th>
-                  <Th width="180px">Party</Th>
-                  <Th width="120px">Bill No.</Th>
-                  <Th width="110px" align="center">Method</Th>
-                  <Th width="120px" align="right">Amount</Th>
-                  <Th width="140px">Reference</Th>
-                  <Th width="130px" align="center">Cheque Status</Th>
-                  <Th>Notes</Th>
+                  <Th width="100px">Date</Th>
+                  <Th width="160px">Party</Th>
+                  <Th width="110px">Bill No.</Th>
+                  <Th width="100px" align="center">Method</Th>
+                  <Th width="100px" align="right">Amount</Th>
+                  <Th width="130px">Reference</Th>
+                  <Th width="120px" align="center">Cheque Status</Th>
+                  <Th width="120px">Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>

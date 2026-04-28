@@ -233,14 +233,14 @@ export default function PartiesPage() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th width="200px">Party Name</Th>
-                  <Th width="140px">Contact</Th>
-                  <Th width="170px">GST Number</Th>
-                  <Th width="130px">Referred By</Th>
-                  <Th width="80px" align="center">Terms</Th>
-                  <Th width="130px" align="right">Total Billed</Th>
-                  <Th width="120px" align="right">Pending</Th>
-                  <Th width="100px" align="center">Actions</Th>
+                  <Th width="160px">Party Name</Th>
+                  <Th width="130px">Contact</Th>
+                  <Th width="160px">GST Number</Th>
+                  <Th width="120px">Referred By</Th>
+                  <Th width="70px" align="center">Terms</Th>
+                  <Th width="110px" align="right">Total Billed</Th>
+                  <Th width="110px" align="right">Pending</Th>
+                  <Th width="90px" align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
