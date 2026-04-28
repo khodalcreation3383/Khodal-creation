@@ -12,81 +12,97 @@ const getDashboardStats = async (req, res) => {
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const startOfYear = new Date(today.getFullYear(), 0, 1);
 
-    // Revenue stats
-    const [totalRevenue, monthRevenue, yearRevenue] = await Promise.all([
+    // Run all queries in parallel for maximum speed
+    const [
+      totalRevenue,
+      monthRevenue,
+      yearRevenue,
+      totalPaid,
+      totalPending,
+      billStatusCounts,
+      totalParties,
+      activeParties,
+      totalDesigns,
+      stockData,
+      recentBills,
+      monthlyRevenue,
+      paymentMethods,
+      reminders,
+      topParties
+    ] = await Promise.all([
+      // Revenue stats
       Bill.aggregate([{ $match: { status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$grandTotal' } } }]),
       Bill.aggregate([{ $match: { billDate: { $gte: startOfMonth }, status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$grandTotal' } } }]),
-      Bill.aggregate([{ $match: { billDate: { $gte: startOfYear }, status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$grandTotal' } } }])
-    ]);
-
-    // Payment stats
-    const [totalPaid, totalPending] = await Promise.all([
+      Bill.aggregate([{ $match: { billDate: { $gte: startOfYear }, status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$grandTotal' } } }]),
+      
+      // Payment stats
       Bill.aggregate([{ $match: { status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$paidAmount' } } }]),
-      Bill.aggregate([{ $match: { status: { $in: ['pending', 'partial', 'overdue'] } } }, { $group: { _id: null, total: { $sum: '$pendingAmount' } } }])
-    ]);
-
-    // Bill status counts
-    const billStatusCounts = await Bill.aggregate([
-      { $match: { status: { $ne: 'cancelled' } } },
-      { $group: { _id: '$status', count: { $sum: 1 } } }
-    ]);
-
-    // Party count
-    const [totalParties, activeParties] = await Promise.all([
+      Bill.aggregate([{ $match: { status: { $in: ['pending', 'partial', 'overdue'] } } }, { $group: { _id: null, total: { $sum: '$pendingAmount' } } }]),
+      
+      // Bill status counts
+      Bill.aggregate([
+        { $match: { status: { $ne: 'cancelled' } } },
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]),
+      
+      // Party counts
       Party.countDocuments(),
-      Party.countDocuments({ isActive: true })
+      Party.countDocuments({ isActive: true }),
+      
+      // Design count
+      Design.countDocuments({ isActive: true }),
+      
+      // Stock overview
+      StockEntry.aggregate([
+        { $group: { _id: '$type', total: { $sum: '$quantity' } } }
+      ]),
+      
+      // Recent bills (lean for speed)
+      Bill.find({ status: { $ne: 'cancelled' } })
+        .populate('party', 'name mobile')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+      
+      // Monthly revenue chart (last 6 months)
+      Bill.aggregate([
+        { $match: { billDate: { $gte: new Date(today.getFullYear(), today.getMonth() - 5, 1) }, status: { $ne: 'cancelled' } } },
+        { $group: {
+          _id: { year: { $year: '$billDate' }, month: { $month: '$billDate' } },
+          revenue: { $sum: '$grandTotal' },
+          paid: { $sum: '$paidAmount' },
+          count: { $sum: 1 }
+        }},
+        { $sort: { '_id.year': 1, '_id.month': 1 } }
+      ]),
+      
+      // Payment method breakdown
+      Payment.aggregate([
+        { $group: { _id: '$method', total: { $sum: '$amount' }, count: { $sum: 1 } } },
+        { $sort: { total: -1 } }
+      ]),
+      
+      // Unread reminders
+      Reminder.find({ isRead: false })
+        .populate('party', 'name')
+        .populate('bill', 'billNumber')
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .lean(),
+      
+      // Top parties by revenue
+      Bill.aggregate([
+        { $match: { status: { $ne: 'cancelled' } } },
+        { $group: { _id: '$party', totalBilled: { $sum: '$grandTotal' }, totalPaid: { $sum: '$paidAmount' }, billCount: { $sum: 1 } } },
+        { $sort: { totalBilled: -1 } },
+        { $limit: 5 },
+        { $lookup: { from: 'parties', localField: '_id', foreignField: '_id', as: 'party' } },
+        { $unwind: '$party' }
+      ])
     ]);
 
-    // Design count
-    const totalDesigns = await Design.countDocuments({ isActive: true });
-
-    // Stock overview
-    const stockData = await StockEntry.aggregate([
-      { $group: { _id: '$type', total: { $sum: '$quantity' } } }
-    ]);
     const totalInward = stockData.find(s => s._id === 'inward')?.total || 0;
     const totalOutward = stockData.find(s => s._id === 'outward')?.total || 0;
-
-    // Recent bills
-    const recentBills = await Bill.find({ status: { $ne: 'cancelled' } })
-      .populate('party', 'name mobile')
-      .sort({ createdAt: -1 })
-      .limit(5);
-
-    // Monthly revenue chart (last 6 months)
-    const monthlyRevenue = await Bill.aggregate([
-      { $match: { billDate: { $gte: new Date(today.getFullYear(), today.getMonth() - 5, 1) }, status: { $ne: 'cancelled' } } },
-      { $group: {
-        _id: { year: { $year: '$billDate' }, month: { $month: '$billDate' } },
-        revenue: { $sum: '$grandTotal' },
-        paid: { $sum: '$paidAmount' },
-        count: { $sum: 1 }
-      }},
-      { $sort: { '_id.year': 1, '_id.month': 1 } }
-    ]);
-
-    // Payment method breakdown
-    const paymentMethods = await Payment.aggregate([
-      { $group: { _id: '$method', total: { $sum: '$amount' }, count: { $sum: 1 } } },
-      { $sort: { total: -1 } }
-    ]);
-
-    // Unread reminders
-    const reminders = await Reminder.find({ isRead: false })
-      .populate('party', 'name')
-      .populate('bill', 'billNumber')
-      .sort({ createdAt: -1 })
-      .limit(10);
-
-    // Top parties by revenue
-    const topParties = await Bill.aggregate([
-      { $match: { status: { $ne: 'cancelled' } } },
-      { $group: { _id: '$party', totalBilled: { $sum: '$grandTotal' }, totalPaid: { $sum: '$paidAmount' }, billCount: { $sum: 1 } } },
-      { $sort: { totalBilled: -1 } },
-      { $limit: 5 },
-      { $lookup: { from: 'parties', localField: '_id', foreignField: '_id', as: 'party' } },
-      { $unwind: '$party' }
-    ]);
 
     return successResponse(res, {
       revenue: {

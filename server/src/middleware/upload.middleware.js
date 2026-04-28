@@ -9,7 +9,7 @@ const designStorage = new CloudinaryStorage({
   params: {
     folder: 'khodal-creation/designs',
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+    // No transformation here - avoids signature issues
   }
 });
 
@@ -19,7 +19,7 @@ const logoStorage = new CloudinaryStorage({
   params: {
     folder: 'khodal-creation/logos',
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    // No transformation here - avoids signature issues
   }
 });
 

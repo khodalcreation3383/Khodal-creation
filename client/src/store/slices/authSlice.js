@@ -54,11 +54,17 @@ const authSlice = createSlice({
         state.loading = false
         state.error = action.payload
       })
+      .addCase(getMe.pending, (state) => {
+        state.loading = true
+      })
       .addCase(getMe.fulfilled, (state, action) => {
+        state.loading = false
         state.user = action.payload
         state.isAuthenticated = true
+        localStorage.setItem('user', JSON.stringify(action.payload))
       })
       .addCase(getMe.rejected, (state) => {
+        state.loading = false
         state.user = null
         state.token = null
         state.isAuthenticated = false

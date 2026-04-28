@@ -24,11 +24,14 @@ const ProtectedRoute = ({ children }) => {
 
 export default function App() {
   const dispatch = useDispatch()
-  const { token } = useSelector(s => s.auth)
+  const { token, isAuthenticated } = useSelector(s => s.auth)
 
   useEffect(() => {
-    if (token) dispatch(getMe())
-  }, [token])
+    // Only fetch user if token exists and not already authenticated
+    if (token && !isAuthenticated) {
+      dispatch(getMe())
+    }
+  }, [token, isAuthenticated, dispatch])
 
   return (
     <Routes>

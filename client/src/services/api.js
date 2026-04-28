@@ -7,6 +7,9 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 
+// Track if we're already redirecting to prevent loops
+let isRedirecting = false
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -19,10 +22,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Only redirect on 401 if not already redirecting and not on login page
+    if (error.response?.status === 401 && !isRedirecting && window.location.pathname !== '/login') {
+      isRedirecting = true
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       window.location.href = '/login'
+      // Reset flag after redirect
+      setTimeout(() => { isRedirecting = false }, 1000)
     }
     return Promise.reject(error)
   }
