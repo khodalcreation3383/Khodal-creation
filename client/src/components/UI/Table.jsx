@@ -27,24 +27,37 @@ export function ColGroup({ cols = [] }) {
 
 export function Thead({ children }) {
   return (
-    <thead className="bg-gray-50 border-b-2 border-gray-200">
-      <tr>{children}</tr>
+    <thead style={{ backgroundColor: '#F9FAFB' }}>
+      <tr style={{ borderBottom: '2px solid #E5E7EB' }}>{children}</tr>
     </thead>
   )
 }
 
 export function Th({ children, sortKey, currentSort, onSort, className = '', align = 'left' }) {
   const isActive = currentSort?.key === sortKey
-  const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
+  const textAlign = align === 'right' ? 'right' : align === 'center' ? 'center' : 'left'
   return (
     <th
-      className={`px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 overflow-hidden ${alignClass} ${sortKey ? 'cursor-pointer hover:bg-gray-100 select-none' : ''} ${className}`}
       onClick={() => sortKey && onSort && onSort(sortKey)}
+      style={{
+        padding: '10px 12px',
+        fontSize: '11px',
+        fontWeight: 600,
+        color: '#6B7280',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        backgroundColor: '#F9FAFB',
+        textAlign,
+        overflow: 'hidden',
+        cursor: sortKey ? 'pointer' : 'default',
+        whiteSpace: 'nowrap',
+      }}
+      className={className}
     >
-      <div className={`flex items-center gap-1 truncate ${align === 'right' ? 'justify-end' : align === 'center' ? 'justify-center' : ''}`}>
-        <span className="truncate">{children}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: textAlign === 'right' ? 'flex-end' : textAlign === 'center' ? 'center' : 'flex-start' }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{children}</span>
         {sortKey && (
-          <span className="text-gray-300 flex-shrink-0">
+          <span style={{ color: '#D1D5DB', flexShrink: 0 }}>
             {isActive
               ? currentSort.order === 'asc'
                 ? <ChevronUp className="w-3 h-3" />
@@ -59,14 +72,17 @@ export function Th({ children, sortKey, currentSort, onSort, className = '', ali
 }
 
 export function Tbody({ children }) {
-  return <tbody className="divide-y divide-gray-100 bg-white">{children}</tbody>
+  return <tbody style={{ backgroundColor: '#FFFFFF' }}>{children}</tbody>
 }
 
 export function Tr({ children, onClick, className = '' }) {
   return (
     <tr
-      className={`hover:bg-gray-50 transition-colors duration-100 ${onClick ? 'cursor-pointer' : ''} ${className}`}
       onClick={onClick}
+      style={{ borderBottom: '1px solid #F3F4F6', cursor: onClick ? 'pointer' : 'default' }}
+      onMouseEnter={e => { if (onClick) e.currentTarget.style.backgroundColor = '#F9FAFB' }}
+      onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent' }}
+      className={className}
     >
       {children}
     </tr>
@@ -74,11 +90,19 @@ export function Tr({ children, onClick, className = '' }) {
 }
 
 export function Td({ children, className = '', colSpan, align = 'left' }) {
-  const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
+  const textAlign = align === 'right' ? 'right' : align === 'center' ? 'center' : 'left'
   return (
     <td
-      className={`px-3 py-3 text-sm text-gray-700 align-middle overflow-hidden ${alignClass} ${className}`}
       colSpan={colSpan}
+      style={{
+        padding: '10px 12px',
+        fontSize: '13px',
+        color: '#374151',
+        verticalAlign: 'middle',
+        textAlign,
+        overflow: 'hidden',
+      }}
+      className={className}
     >
       {children}
     </td>
