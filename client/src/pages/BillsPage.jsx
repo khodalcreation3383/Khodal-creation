@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Download, Eye, XCircle, Filter } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../services/api'
-import { Table, Thead, Th, Tbody, Tr, Td } from '../components/UI/Table'
+import { Table, Thead, Th, Tbody, Tr, Td, ColGroup } from '../components/UI/Table'
 import Pagination from '../components/UI/Pagination'
 import SearchFilter from '../components/UI/SearchFilter'
 import { PageLoader } from '../components/UI/LoadingSpinner'
@@ -126,17 +126,18 @@ export default function BillsPage() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <Table>
+              <ColGroup cols={['130px', '180px', '100px', '100px', '110px', '90px', '90px', '90px', '80px']} />
               <Thead>
                 <Tr>
-                  <Th width="13%">Bill No.</Th>
-                  <Th width="20%">Party</Th>
-                  <Th width="11%">Bill Date</Th>
-                  <Th width="11%">Due Date</Th>
-                  <Th width="12%" align="right">Amount</Th>
-                  <Th width="10%" align="right">Paid</Th>
-                  <Th width="10%" align="right">Pending</Th>
-                  <Th width="10%" align="center">Status</Th>
-                  <Th width="13%" align="center">Actions</Th>
+                  <Th>Bill No.</Th>
+                  <Th>Party</Th>
+                  <Th>Bill Date</Th>
+                  <Th>Due Date</Th>
+                  <Th align="right">Amount</Th>
+                  <Th align="right">Paid</Th>
+                  <Th align="right">Pending</Th>
+                  <Th align="center">Status</Th>
+                  <Th align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>

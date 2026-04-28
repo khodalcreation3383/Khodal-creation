@@ -1,27 +1,41 @@
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 
+// Table wrapper - no fixed layout, auto sizing with overflow scroll
 export function Table({ children, className = '' }) {
   return (
     <div className={`w-full overflow-x-auto ${className}`}>
-      <table className="w-full text-sm" style={{ tableLayout: 'fixed', borderCollapse: 'collapse' }}>{children}</table>
+      <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+        {children}
+      </table>
     </div>
+  )
+}
+
+// ColGroup for explicit column widths - use this inside Table before Thead
+// Example: <ColGroup cols={['180px', '140px', 'auto', '100px']} />
+export function ColGroup({ cols = [] }) {
+  return (
+    <colgroup>
+      {cols.map((w, i) => (
+        <col key={i} style={{ width: w }} />
+      ))}
+    </colgroup>
   )
 }
 
 export function Thead({ children }) {
   return (
-    <thead className="bg-gray-50 border-b-2 border-gray-200 sticky top-0 z-10">
+    <thead className="bg-gray-50 border-b-2 border-gray-200">
       <tr>{children}</tr>
     </thead>
   )
 }
 
-export function Th({ children, sortKey, currentSort, onSort, className = '', align = 'left', width }) {
+export function Th({ children, sortKey, currentSort, onSort, className = '', align = 'left' }) {
   const isActive = currentSort?.key === sortKey
   const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
     <th
-      style={width ? { width } : undefined}
       className={`px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 whitespace-nowrap ${alignClass} ${sortKey ? 'cursor-pointer hover:bg-gray-100 select-none' : ''} ${className}`}
       onClick={() => sortKey && onSort && onSort(sortKey)}
     >
@@ -49,7 +63,7 @@ export function Tbody({ children }) {
 export function Tr({ children, onClick, className = '' }) {
   return (
     <tr
-      className={`hover:bg-blue-50/30 transition-colors duration-100 ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      className={`hover:bg-gray-50 transition-colors duration-100 ${onClick ? 'cursor-pointer' : ''} ${className}`}
       onClick={onClick}
     >
       {children}

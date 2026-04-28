@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Eye, Edit2, Trash2, Phone, MapPin } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../services/api'
-import { Table, Thead, Th, Tbody, Tr, Td } from '../components/UI/Table'
+import { Table, Thead, Th, Tbody, Tr, Td, ColGroup } from '../components/UI/Table'
 import Pagination from '../components/UI/Pagination'
 import SearchFilter from '../components/UI/SearchFilter'
 import Modal from '../components/UI/Modal'
@@ -231,16 +231,17 @@ export default function PartiesPage() {
           {/* Desktop table */}
           <div className="hidden sm:block">
             <Table>
+              <ColGroup cols={['180px', '140px', '160px', '130px', '70px', '110px', '110px', '90px']} />
               <Thead>
                 <Tr>
-                  <Th width="22%">Party Name</Th>
-                  <Th width="15%">Contact</Th>
-                  <Th width="18%">GST Number</Th>
-                  <Th width="14%">Referred By</Th>
-                  <Th width="8%" align="center">Terms</Th>
-                  <Th width="11%" align="right">Total Billed</Th>
-                  <Th width="11%" align="right">Pending</Th>
-                  <Th width="11%" align="center">Actions</Th>
+                  <Th>Party Name</Th>
+                  <Th>Contact</Th>
+                  <Th>GST Number</Th>
+                  <Th>Referred By</Th>
+                  <Th align="center">Terms</Th>
+                  <Th align="right">Total Billed</Th>
+                  <Th align="right">Pending</Th>
+                  <Th align="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>

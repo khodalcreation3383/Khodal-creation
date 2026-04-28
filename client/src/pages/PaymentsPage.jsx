@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Filter, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../services/api'
-import { Table, Thead, Th, Tbody, Tr, Td } from '../components/UI/Table'
+import { Table, Thead, Th, Tbody, Tr, Td, ColGroup } from '../components/UI/Table'
 import Pagination from '../components/UI/Pagination'
 import { PageLoader } from '../components/UI/LoadingSpinner'
 import { formatCurrency, formatDate, paymentMethodLabel } from '../utils/helpers'
@@ -123,16 +123,17 @@ export default function PaymentsPage() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <Table>
+              <ColGroup cols={['100px', '170px', '120px', '100px', '100px', '130px', '120px', 'auto']} />
               <Thead>
                 <Tr>
-                  <Th width="11%">Date</Th>
-                  <Th width="19%">Party</Th>
-                  <Th width="13%">Bill No.</Th>
-                  <Th width="11%" align="center">Method</Th>
-                  <Th width="11%" align="right">Amount</Th>
-                  <Th width="14%">Reference</Th>
-                  <Th width="14%" align="center">Cheque Status</Th>
-                  <Th width="17%">Notes</Th>
+                  <Th>Date</Th>
+                  <Th>Party</Th>
+                  <Th>Bill No.</Th>
+                  <Th align="center">Method</Th>
+                  <Th align="right">Amount</Th>
+                  <Th>Reference</Th>
+                  <Th align="center">Cheque Status</Th>
+                  <Th>Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>

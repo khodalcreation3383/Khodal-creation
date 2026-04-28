@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Plus, TrendingUp, TrendingDown, Package } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../services/api'
-import { Table, Thead, Th, Tbody, Tr, Td } from '../components/UI/Table'
+import { Table, Thead, Th, Tbody, Tr, Td, ColGroup } from '../components/UI/Table'
 import Pagination from '../components/UI/Pagination'
 import Modal from '../components/UI/Modal'
 import { PageLoader } from '../components/UI/LoadingSpinner'
@@ -206,16 +206,17 @@ export default function StockPage() {
         {loading ? <PageLoader /> : activeTab === 'entries' ? (
           <>
             <Table>
+              <ColGroup cols={['100px', '190px', '110px', '60px', '90px', '110px', '130px', 'auto']} />
               <Thead>
                 <Tr>
-                  <Th width="12%">Date</Th>
-                  <Th width="22%">Design</Th>
-                  <Th width="13%" align="center">Type</Th>
-                  <Th width="8%" align="center">Qty</Th>
-                  <Th width="11%">Color</Th>
-                  <Th width="13%">Fabric</Th>
-                  <Th width="13%">Party</Th>
-                  <Th width="8%">Notes</Th>
+                  <Th>Date</Th>
+                  <Th>Design</Th>
+                  <Th align="center">Type</Th>
+                  <Th align="center">Qty</Th>
+                  <Th>Color</Th>
+                  <Th>Fabric</Th>
+                  <Th>Party</Th>
+                  <Th>Notes</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -246,15 +247,16 @@ export default function StockPage() {
           </>
         ) : (
           <Table>
+            <ColGroup cols={['180px', '110px', '100px', '110px', '110px', '90px', '110px']} />
             <Thead>
               <Tr>
-                <Th width="25%">Design</Th>
-                <Th width="15%">Fabric</Th>
-                <Th width="13%" align="right">Price/Pc</Th>
-                <Th width="13%" align="center">Total Inward</Th>
-                <Th width="13%" align="center">Total Outward</Th>
-                <Th width="10%" align="center">Available</Th>
-                <Th width="11%" align="right">Stock Value</Th>
+                <Th>Design</Th>
+                <Th>Fabric</Th>
+                <Th align="right">Price/Pc</Th>
+                <Th align="center">Total Inward</Th>
+                <Th align="center">Total Outward</Th>
+                <Th align="center">Available</Th>
+                <Th align="right">Stock Value</Th>
               </Tr>
             </Thead>
             <Tbody>
